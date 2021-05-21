@@ -85,6 +85,7 @@ namespace StackExchange.Redis
                 ServiceName = "serviceName",
                 Ssl = "ssl",
                 SslHost = "sslHost",
+                ResolveRegionalDNS = "resolveRegionalDNS",
                 SslProtocols = "sslProtocols",
                 SyncTimeout = "syncTimeout",
                 TieBreaker = "tiebreaker",
@@ -371,6 +372,11 @@ namespace StackExchange.Redis
         public bool Ssl { get { return ssl.GetValueOrDefault(); } set { ssl = value; } }
 
         /// <summary>
+        /// Indicates whether we need to resolve regional DNS
+        /// </summary>
+        public bool ResolveRegionalDNS { get; set; }
+
+        /// <summary>
         /// The target-host to use when validating SSL certificate; setting a value here enables SSL mode
         /// </summary>
         public string SslHost { get { return sslHost ?? InferSslHostFromEndpoints(); } set { sslHost = value; } }
@@ -474,6 +480,7 @@ namespace StackExchange.Redis
                 ReconnectRetryPolicy = reconnectRetryPolicy,
                 SslProtocols = SslProtocols,
                 checkCertificateRevocation = checkCertificateRevocation,
+                ResolveRegionalDNS = ResolveRegionalDNS
             };
             foreach (var item in EndPoints)
                 options.EndPoints.Add(item);
@@ -730,6 +737,9 @@ namespace StackExchange.Redis
                             break;
                         case OptionKeys.SslHost:
                             SslHost = value;
+                            break;
+                        case OptionKeys.ResolveRegionalDNS:
+                            ResolveRegionalDNS = OptionKeys.ParseBoolean(key, value);
                             break;
                         case OptionKeys.HighPrioritySocketThreads:
                             HighPrioritySocketThreads = OptionKeys.ParseBoolean(key, value);

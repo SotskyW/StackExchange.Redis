@@ -923,6 +923,19 @@ namespace StackExchange.Redis
                 return config;
             }
 
+            if (config.ResolveRegionalDNS)
+            {
+                for (int i = 0; i < config.EndPoints.Count; i++)
+                {
+                    switch (config.EndPoints[i])
+                    {
+                        case DnsEndPoint dns:
+                            config.EndPoints[i] = new DnsEndPoint(Dns.GetHostEntry(dns.Host).HostName, dns.Port, dns.AddressFamily);
+                            break;
+                    }
+                }
+            }
+
             config.SetDefaultPorts();
 
             return config;
